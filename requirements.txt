@@ -1,0 +1,10 @@
+pdfplumber
+pytesseract
+Pillow
+pandas
+python-Levenshtein
+thefuzz
+openai
+rich
+pytest
+ofxparse
