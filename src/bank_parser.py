@@ -6,17 +6,17 @@ Filters for credit transactions only (positive amounts representing deposits).
 """
 
 import pandas as pd
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Set
 
 
 # Common column name variants used by different banks
-_DATE_VARIANTS = {"date", "transaction date", "trans date", "posted date", "value date"}
-_DESC_VARIANTS = {
+_DATE_VARIANTS: Set[str] = {"date", "transaction date", "trans date", "posted date", "value date"}
+_DESC_VARIANTS: Set[str] = {
     "description", "memo", "narrative", "details", "transaction description",
     "payee", "reference", "trans description", "particulars",
 }
-_AMOUNT_VARIANTS = {"amount", "credit", "debit", "transaction amount", "value"}
-_TYPE_VARIANTS = {"type", "transaction type", "trans type", "dr/cr", "credit/debit"}
+_AMOUNT_VARIANTS: Set[str] = {"amount", "credit", "debit", "transaction amount", "value"}
+_TYPE_VARIANTS: Set[str] = {"type", "transaction type", "trans type", "dr/cr", "credit/debit"}
 
 
 def _normalise(name: str) -> str:
@@ -24,7 +24,7 @@ def _normalise(name: str) -> str:
     return name.strip().lower()
 
 
-def _detect_column(columns: List[str], variants: set) -> Optional[str]:
+def _detect_column(columns: List[str], variants: Set[str]) -> Optional[str]:
     """
     Find the first column whose normalised name appears in the variants set.
     Returns the original (un-normalised) column name, or None if not found.
