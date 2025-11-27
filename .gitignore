@@ -5,9 +5,24 @@ dist/
 build/
 .venv/
 venv/
+env/
 .env
+.env.*
+!.env.example
+
+# Logs
 *.log
+logs/
+
+# Output files
+results.csv
+demo_results.csv
+*.out
+
+# IDE
 .idea/
 .vscode/
+
+# OS
 .DS_Store
 Thumbs.db
