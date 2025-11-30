@@ -10,6 +10,13 @@ This is a variant of the subset-sum problem. We use two strategies:
 - Dynamic programming for larger sets
 
 See docs/ALGORITHM.md for a detailed explanation.
+
+Typical usage
+-------------
+>>> from src.matcher import match_payments
+>>> results = match_payments(deposits, invoices, tolerance=0.01)
+>>> for r in results:
+...     print(r["status"], r["deposit_amount"])
 """
 
 from itertools import combinations
