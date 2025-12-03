@@ -1,0 +1,32 @@
+PROFESSIONAL SERVICES INVOICE
+
+Invoice No. INV-2026-003
+Date: January 20, 2026
+
+Bill To:
+Johnson and Associates
+321 Enterprise Way
+Austin, TX 78701
+
+Prepared By:
+Apex Consulting Group
+
+Project: Digital Transformation Assessment Q1 2026
+
+Line Items:
+---------------------------------------------------------------------------
+Initial Discovery and Stakeholder Interviews         $1,200.00
+Technical Architecture Assessment                    $1,800.00
+Competitive Analysis Report                          $800.00
+Executive Presentation and Recommendations           $400.00
+---------------------------------------------------------------------------
+
+Total:                                               $4,200.00
+
+Amount Due: $4,200.00
+
+Invoice Terms: Payment due within 30 days of invoice date.
+Late payments subject to 1.5% monthly interest charge.
+
+Wire transfer details available upon request.
+Reference: INV-2026-003

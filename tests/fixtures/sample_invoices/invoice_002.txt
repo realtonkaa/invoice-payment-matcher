@@ -1,0 +1,30 @@
+TAX INVOICE
+
+Inv # INV-2026-002
+Date Issued: 2026-01-12
+
+Customer:
+Smith LLC
+789 Commerce Street
+Chicago, IL 60601
+
+Vendor:
+Apex Consulting Group
+456 Professional Blvd
+San Francisco, CA 94105
+
+Services Rendered:
+-------------------
+Monthly Retainer - January 2026                                $1,250.00
+Ad-hoc Support (4 hours at $125/hr)                            $500.00
+-------------------
+
+Grand Total: $1,750.00
+
+Payment Due By: 2026-02-12
+Payment Method: ACH or Wire Transfer
+
+Bank Details:
+Bank: First National Bank
+Account: 987654321
+Routing: 021000021
