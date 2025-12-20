@@ -1,0 +1,9 @@
+# Development dependencies — not needed to run the tool
+# Install with: pip install -r requirements-dev.txt
+
+pytest>=7.0
+pytest-cov
+flake8
+black
+isort
+mypy
