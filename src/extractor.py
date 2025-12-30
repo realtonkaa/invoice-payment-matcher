@@ -55,13 +55,23 @@ def _search_patterns(text: str, patterns: list) -> Optional[str]:
 
 
 def _parse_amount(raw: Optional[str]) -> Optional[float]:
-    """Convert a raw amount string like '1,500.00' to a float."""
+    """Convert a raw amount string like '1,500.00' or '$ 2,000' to a float.
+
+    Handles common edge cases:
+    - Currency symbols ($, £, €) embedded in the string
+    - Thousands separators (commas)
+    - Trailing/leading whitespace
+    - Empty strings
+    """
     if raw is None:
         return None
-    cleaned = raw.replace(",", "").strip()
     try:
+        # Strip currency symbols and whitespace, remove thousands separators
+        cleaned = raw.replace(",", "").replace("$", "").replace("£", "").replace("€", "").strip()
+        if not cleaned:
+            return None
         return float(cleaned)
-    except ValueError:
+    except (ValueError, AttributeError):
         return None
 
 
