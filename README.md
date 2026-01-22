@@ -109,6 +109,39 @@ Summary: 3 matched, 1 unmatched
 
 ---
 
+## Troubleshooting
+
+**`pdfplumber` raises an error on some PDFs**
+
+Some PDFs are encrypted or password-protected. pdfplumber can't read these — you'll need to decrypt them first (e.g. with `qpdf --decrypt`). The tool will skip files it can't parse and print a warning.
+
+**Tesseract not found**
+
+If you see `TesseractNotFoundError`, Tesseract is not installed or not on your PATH. Install it:
+- macOS: `brew install tesseract`
+- Ubuntu: `sudo apt install tesseract-ocr`
+- Windows: installer at https://github.com/UB-Mannheim/tesseract/wiki
+
+**Amount column not detected in bank CSV**
+
+The tool looks for columns named things like "Amount", "Credit", "Debit", or "Transaction Amount". If your CSV uses a non-standard name, you'll see a `ValueError`. Open the CSV and check the column headers — you may need to rename the column before running the tool.
+
+**No invoices extracted from directory**
+
+This usually means the invoice PDFs have no extractable text (scanned images). Try running with pytesseract installed, or check that the files in the directory are actually PDFs/TXTs and not empty.
+
+**Tolerance too tight**
+
+If you have deposits that should match but don't, try increasing `--tolerance`:
+
+```bash
+python -m src.cli bank.csv invoices/ --tolerance 0.05
+```
+
+A tolerance of `0.05` handles rounding differences up to 5 cents. For wire transfers with fees deducted, you may need `--tolerance 15.00`.
+
+---
+
 ## Limitations
 
 - The subset-sum problem is NP-complete. The DP approach handles large invoice sets reasonably well, but for very large sets (hundreds of invoices per client), performance will degrade.
