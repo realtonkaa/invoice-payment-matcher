@@ -133,6 +133,24 @@ Building this project taught me several things I hadn't encountered before in te
 
 ---
 
+## Demo Walkthrough
+
+Run the tool against the included example data:
+
+```bash
+python -m src.cli examples/demo_bank_statement.csv tests/fixtures/sample_invoices/ --output demo_results.csv
+```
+
+This reads 8 bank deposits and 3 sample invoices. You should see three matched deposits
+($2,500 matching INV-2026-001, $1,750 matching INV-2026-002, $4,200 matching INV-2026-003)
+and the remaining deposits listed as unmatched since no corresponding invoices are in the
+sample set.
+
+The CSV at `demo_results.csv` will contain all results with matched invoice numbers and
+confidence scores.
+
+---
+
 ## Tech Stack
 
 - Python 3.10+
