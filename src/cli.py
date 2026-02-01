@@ -13,8 +13,11 @@ Options:
 """
 
 import argparse
+import logging
 import os
 import sys
+
+logger = logging.getLogger(__name__)
 
 from src.bank_parser import parse_bank_csv
 from src.invoice_parser import extract_texts_from_directory
@@ -74,8 +77,12 @@ def run(args=None) -> int:
     """
     Main entry point. Returns exit code (0 = success, 1 = error).
     """
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
     parser = build_parser()
     parsed = parser.parse_args(args)
+
+    logger.info("Starting invoice matcher")
 
     # --- Validate inputs ---
     if not os.path.isfile(parsed.bank_file):
@@ -87,6 +94,7 @@ def run(args=None) -> int:
         return 1
 
     # --- Parse bank statement ---
+    logger.info("Parsing bank statement: %s", parsed.bank_file)
     try:
         deposits = parse_bank_csv(
             parsed.bank_file,
@@ -100,7 +108,10 @@ def run(args=None) -> int:
         print("No deposit transactions found in bank file.", file=sys.stderr)
         return 1
 
+    logger.info("Found %d deposit(s)", len(deposits))
+
     # --- Extract invoice data ---
+    logger.info("Extracting invoice data from: %s", parsed.invoices_dir)
     raw_texts = extract_texts_from_directory(parsed.invoices_dir)
     invoices = []
     for filename, text in raw_texts.items():
