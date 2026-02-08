@@ -124,9 +124,9 @@ def match_payments(
         if subset is not None:
             matched = []
             for local_idx in subset:
-                orig_idx = indices_map[local_idx]
-                used_invoices.add(orig_idx)
-                matched.append(invoices[orig_idx])
+                invoice_idx = indices_map[local_idx]
+                used_invoices.add(invoice_idx)
+                matched.append(invoices[invoice_idx])
 
             total_matched = sum(inv["amount"] for inv in matched)
             difference = round(deposit["amount"] - total_matched, 2)
