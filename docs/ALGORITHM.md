@@ -111,6 +111,34 @@ find_subset_sum([invoice], deposit, tolerance=0.01)   # does not match
 
 ## The Full Matching Pipeline
 
+The diagram below shows data flow from raw inputs to the final report:
+
+```
+  bank_statement.csv          invoices/
+        │                         │
+        ▼                         ▼
+  parse_bank_csv()      extract_texts_from_directory()
+        │                         │
+        │                         ▼
+        │               extract_invoice_data()  (regex or LLM)
+        │                         │
+        ▼                         ▼
+   deposits[]  ──────────►  match_payments()
+   [amount,                       │
+    description,                  ▼
+    date]                  results[]
+                           [status: matched / unmatched,
+                            matched_invoices,
+                            confidence]
+                                  │
+                    ┌─────────────┴─────────────┐
+                    ▼                           ▼
+              print_report()             export_csv()
+              (terminal)                 (results.csv)
+```
+
+In pseudocode:
+
 ```
 deposits = parse_bank_csv("bank.csv")
 invoices = [extract_invoice_data(text) for text in invoice_texts]
