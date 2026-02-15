@@ -1,20 +1,55 @@
 # Invoice Payment Matcher
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-102%20passing-brightgreen)
+![Status](https://img.shields.io/badge/status-active-brightgreen)
 
 A Python CLI tool that automatically matches bank deposits to invoice PDFs using subset-sum algorithms, OCR text extraction, and fuzzy name matching.
 
----
+## Table of Contents
+
+- [Quick Start](#quick-start)
+- [Why I Built This](#why-i-built-this)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [How It Works](#how-it-works)
+- [Example Output](#example-output)
+- [Troubleshooting](#troubleshooting)
+- [Limitations](#limitations)
+- [What I Learned](#what-i-learned)
+- [Demo Walkthrough](#demo-walkthrough)
+- [Tech Stack](#tech-stack)
+- [References](#references)
+- [Built With Claude](#built-with-claude)
+- [License](#license)
+
+## Quick Start
+
+```bash
+# 1. Clone and setup
+git clone https://github.com/realtonkaa/invoice-payment-matcher.git
+cd invoice-payment-matcher
+
+# 2. Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run the matcher
+python -m src.cli your_bank_statement.csv your_invoices_folder/ --output results.csv
+```
+
+See the [Usage](#usage) section for more options and examples.
 
 ## Why I Built This
 
 I watched a small business owner spend three hours every month manually matching bank deposits to invoices. She would open a spreadsheet, scan through PDFs, and try to figure out which invoices a client had bundled into a single payment. A deposit of $4,250 might be two invoices ($2,500 + $1,750), or three smaller ones, and she had no systematic way to find the right combination.
 
 This is a textbook subset-sum problem, which is a well-studied problem in computer science. I built this tool to automate the reconciliation process using algorithms that solve exactly that kind of combinatorial search. The result is a CLI tool that takes a bank statement CSV and a folder of invoice PDFs, then produces a report telling you which invoices correspond to which deposits.
-
----
 
 ## Features
 
@@ -27,8 +62,6 @@ This is a textbook subset-sum problem, which is a well-studied problem in comput
 - Rich terminal output with color-coded confidence scores
 - CSV export of matched and unmatched results
 - End-to-end test with sample data included
-
----
 
 ## Installation
 
@@ -44,8 +77,6 @@ For OCR support, install Tesseract separately:
 - macOS: `brew install tesseract`
 - Ubuntu: `sudo apt install tesseract-ocr`
 - Windows: Download installer from https://github.com/UB-Mannheim/tesseract/wiki
-
----
 
 ## Usage
 
@@ -74,24 +105,56 @@ python -m src.cli bank_statement.csv invoices/ --use-llm
 python -m src.cli examples/demo_bank_statement.csv tests/fixtures/sample_invoices/ --output demo_results.csv
 ```
 
----
-
 ## How It Works
 
 See [docs/ALGORITHM.md](docs/ALGORITHM.md) for the full explanation. The short version:
 
-1. **Parse bank statement** — load the CSV, detect date/description/amount columns, filter for credit transactions only.
-2. **Extract invoice data** — read each PDF (or .txt for testing), pull out the invoice number, client name, and amount using regex.
-3. **Fuzzy name matching** — strip common prefixes from bank descriptions ("WIRE TRANSFER - ", "ACH DEPOSIT - ") and compare the remaining company name to invoice client names using Levenshtein distance.
-4. **Subset-sum matching** — for each deposit, find the subset of invoice amounts that sums to the deposit total (within tolerance). Uses brute-force combinations for up to 20 invoices, dynamic programming for larger sets.
-5. **Generate report** — display matched and unmatched results in the terminal with colored confidence scores, and optionally export to CSV.
+1. **Parse bank statement:** load the CSV, detect date/description/amount columns, filter for credit transactions only.
+2. **Extract invoice data:** read each PDF (or .txt for testing), pull out the invoice number, client name, and amount using regex.
+3. **Fuzzy name matching:** strip common prefixes from bank descriptions ("WIRE TRANSFER", "ACH DEPOSIT") and compare the remaining company name to invoice client names using Levenshtein distance.
+4. **Subset-sum matching:** for each deposit, find the subset of invoice amounts that sums to the deposit total (within tolerance). Uses brute-force combinations for up to 20 invoices, dynamic programming for larger sets.
+5. **Generate report:** display matched and unmatched results in the terminal with colored confidence scores, and optionally export to CSV.
 
----
+### Pipeline
+
+```
+Bank CSV          Invoice PDFs
+    |                  |
+    v                  v
+[CSV Parser]    [PDF Reader + OCR]
+    |                  |
+    v                  v
+ Deposits      [Regex/LLM Extractor]
+    |                  |
+    |                  v
+    |              Invoices
+    |                  |
+    +--------+---------+
+             |
+             v
+    [Subset-Sum Matcher]
+             |
+     +-------+-------+
+     |               |
+  Matched        Unmatched
+     |               |
+     v               v
+  [Fuzzy Name     [Flagged for
+   Verification]   Manual Review]
+     |
+     v
+  [Report Generator]
+     |
+     +--------+--------+
+     |                 |
+  Terminal CSV       CSV/Excel
+  (Rich output)      Export
+```
 
 ## Example Output
 
 ```
-Invoice Payment Matcher — Reconciliation Report
+Invoice Payment Matcher - Reconciliation Report
 ================================================
 
 MATCHED DEPOSITS
@@ -111,13 +174,11 @@ UNMATCHED DEPOSITS
 Summary: 3 matched, 1 unmatched
 ```
 
----
-
 ## Troubleshooting
 
 **`pdfplumber` raises an error on some PDFs**
 
-Some PDFs are encrypted or password-protected. pdfplumber can't read these — you'll need to decrypt them first (e.g. with `qpdf --decrypt`). The tool will skip files it can't parse and print a warning.
+Some PDFs are encrypted or password-protected. pdfplumber can't read these. You'll need to decrypt them first (e.g. with `qpdf --decrypt`). The tool will skip files it can't parse and print a warning.
 
 **Tesseract not found**
 
@@ -128,7 +189,7 @@ If you see `TesseractNotFoundError`, Tesseract is not installed or not on your P
 
 **Amount column not detected in bank CSV**
 
-The tool looks for columns named things like "Amount", "Credit", "Debit", or "Transaction Amount". If your CSV uses a non-standard name, you'll see a `ValueError`. Open the CSV and check the column headers — you may need to rename the column before running the tool.
+The tool looks for columns named things like "Amount", "Credit", "Debit", or "Transaction Amount". If your CSV uses a non-standard name, you'll see a `ValueError`. Open the CSV and check the column headers. You may need to rename the column before running the tool.
 
 **No invoices extracted from directory**
 
@@ -144,8 +205,6 @@ python -m src.cli bank.csv invoices/ --tolerance 0.05
 
 A tolerance of `0.05` handles rounding differences up to 5 cents. For wire transfers with fees deducted, you may need `--tolerance 15.00`.
 
----
-
 ## Limitations
 
 - The subset-sum problem is NP-complete. The DP approach handles large invoice sets reasonably well, but for very large sets (hundreds of invoices per client), performance will degrade.
@@ -153,8 +212,6 @@ A tolerance of `0.05` handles rounding differences up to 5 cents. For wire trans
 - Fuzzy name matching can produce false positives if company names are very similar. The confidence score helps flag these cases.
 - The tool assumes deposits and invoices are in the same currency.
 - LLM extraction requires an OpenAI API key and incurs API costs.
-
----
 
 ## What I Learned
 
@@ -167,8 +224,6 @@ Building this project taught me several things I hadn't encountered before in te
 **Rich makes terminal output genuinely pleasant.** I had avoided building CLI tools because I assumed the output would be ugly. The rich library produces tables and color output that are actually readable.
 
 **OCR is a last resort, not a first choice.** pdfplumber extracts text directly from PDFs that were generated digitally (most modern invoices). pytesseract is only needed for scanned images, and its accuracy is significantly lower. The fallback chain matters.
-
----
 
 ## Demo Walkthrough
 
@@ -186,20 +241,22 @@ sample set.
 The CSV at `demo_results.csv` will contain all results with matched invoice numbers and
 confidence scores.
 
----
-
 ## Tech Stack
 
 - Python 3.10+
-- pdfplumber — PDF text extraction
-- pytesseract + Pillow — OCR for scanned invoices
-- pandas — CSV parsing and data manipulation
-- thefuzz + python-Levenshtein — fuzzy string matching
-- rich — terminal output formatting
-- openai — optional LLM-assisted extraction
-- pytest — testing
+- pdfplumber: PDF text extraction
+- pytesseract + Pillow: OCR for scanned invoices
+- pandas: CSV parsing and data manipulation
+- thefuzz + python-Levenshtein: fuzzy string matching
+- rich: terminal output formatting
+- openai: optional LLM-assisted extraction
+- pytest: testing
 
----
+## References
+
+- The Subset Sum Matching Problem, JPMorgan AI Research ([arXiv:2508.19218](https://arxiv.org/abs/2508.19218))
+- pdfplumber: PDF parsing library ([GitHub](https://github.com/jsvine/pdfplumber))
+- TheFuzz: Fuzzy string matching in Python ([GitHub](https://github.com/seatgeek/thefuzz))
 
 ## Built With Claude
 
@@ -210,9 +267,7 @@ I used [Claude](https://claude.ai) (Anthropic's AI assistant) as a coding partne
 - Generating realistic test fixture data (sample invoices, bank statements)
 - Setting up the PDF extraction pipeline with pdfplumber and OCR fallback
 
-The core problem identification ("small business owners waste hours matching payments to invoices") came from talking to actual business owners. The algorithm design, architecture decisions, and project direction were all mine. Claude helped me implement ideas faster and taught me concepts I wouldn't have learned as quickly on my own. I think that's what AI tools are for -- amplifying what you can do, not replacing the thinking.
-
----
+The core problem identification ("small business owners waste hours matching payments to invoices") came from talking to actual business owners. The algorithm design, architecture decisions, and project direction were all mine. Claude helped me implement ideas faster and taught me concepts I wouldn't have learned as quickly on my own. I think that's what AI tools are for: amplifying what you can do, not replacing the thinking.
 
 ## License
 
