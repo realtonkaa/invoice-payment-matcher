@@ -1,5 +1,9 @@
 # Invoice Payment Matcher
 
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
+
 A Python CLI tool that automatically matches bank deposits to invoice PDFs using subset-sum algorithms, OCR text extraction, and fuzzy name matching.
 
 ---
