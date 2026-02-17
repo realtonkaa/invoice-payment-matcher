@@ -201,6 +201,19 @@ confidence scores.
 
 ---
 
+## Built With Claude
+
+I used [Claude](https://claude.ai) (Anthropic's AI assistant) as a coding partner on this project. Claude helped me with:
+
+- Understanding the subset-sum problem and its connection to bank reconciliation (it pointed me to a JPMorgan research paper on the topic)
+- Writing the dynamic programming variant of the matching algorithm for larger invoice sets
+- Generating realistic test fixture data (sample invoices, bank statements)
+- Setting up the PDF extraction pipeline with pdfplumber and OCR fallback
+
+The core problem identification ("small business owners waste hours matching payments to invoices") came from talking to actual business owners. The algorithm design, architecture decisions, and project direction were all mine. Claude helped me implement ideas faster and taught me concepts I wouldn't have learned as quickly on my own. I think that's what AI tools are for -- amplifying what you can do, not replacing the thinking.
+
+---
+
 ## License
 
 MIT License. See LICENSE for details.
